@@ -1,0 +1,1458 @@
+{
+  "info": {
+    "name": "School Management API",
+    "description": "Coleção completa da API do Student Management System.\n\nVariáveis:\n- base_url: http://localhost:5007\n- csrf_token: preenchido automaticamente após o login\n\nFluxo de autenticação:\n1. Execute 'Login' — o script de teste captura o csrf_token automaticamente.\n2. Os tokens JWT ficam no cookie (gerenciado automaticamente pelo Postman).\n3. Todos os endpoints autenticados já enviam x-csrf-token via variável.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5007", "type": "string" },
+    { "key": "csrf_token", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const cookie = pm.cookies.get('csrfToken');",
+                  "if (cookie) {",
+                  "    pm.collectionVariables.set('csrf_token', cookie);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/verify-email/:token",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "verify-email", ":token"],
+              "variable": [{ "key": "token", "value": "" }]
+            }
+          }
+        },
+        {
+          "name": "Setup Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"\",\n  \"username\": \"\",\n  \"password\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/setup-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "setup-password"]
+            }
+          }
+        },
+        {
+          "name": "Resend Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/resend-email-verification",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "resend-email-verification"]
+            }
+          }
+        },
+        {
+          "name": "Resend Password Setup Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/resend-pwd-setup-link",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "resend-pwd-setup-link"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/reset-pwd",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "reset-pwd"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "Get My Account",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/account/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "account", "me"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"\",\n  \"newPassword\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/account/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "account", "change-password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "List Students",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/students",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "students"]
+            }
+          }
+        },
+        {
+          "name": "Get Student",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/students/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "students", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"gender\": \"\",\n  \"phone\": \"\",\n  \"dob\": \"\",\n  \"class\": \"\",\n  \"section\": \"\",\n  \"roll\": 1,\n  \"admissionDate\": \"\",\n  \"currentAddress\": \"\",\n  \"permanentAddress\": \"\",\n  \"fatherName\": \"\",\n  \"fatherPhone\": \"\",\n  \"motherName\": \"\",\n  \"motherPhone\": \"\",\n  \"guardianName\": \"\",\n  \"guardianPhone\": \"\",\n  \"relationOfGuardian\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/students",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "students"]
+            }
+          }
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"gender\": \"\",\n  \"phone\": \"\",\n  \"dob\": \"\",\n  \"class\": \"\",\n  \"section\": \"\",\n  \"roll\": 1,\n  \"admissionDate\": \"\",\n  \"currentAddress\": \"\",\n  \"permanentAddress\": \"\",\n  \"fatherName\": \"\",\n  \"fatherPhone\": \"\",\n  \"motherName\": \"\",\n  \"motherPhone\": \"\",\n  \"guardianName\": \"\",\n  \"guardianPhone\": \"\",\n  \"relationOfGuardian\": \"\",\n  \"systemAccess\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/students/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "students", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Update Student Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/students/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "students", ":id", "status"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staffs",
+      "item": [
+        {
+          "name": "List Staffs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/staffs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "staffs"],
+              "query": [
+                { "key": "userId", "value": "", "disabled": true },
+                { "key": "roleId", "value": "", "disabled": true },
+                { "key": "name", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Staff",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/staffs/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "staffs", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": 2,\n  \"gender\": \"\",\n  \"maritalStatus\": \"\",\n  \"phone\": \"\",\n  \"dob\": \"\",\n  \"joinDate\": \"\",\n  \"qualification\": \"\",\n  \"experience\": \"\",\n  \"currentAddress\": \"\",\n  \"permanentAddress\": \"\",\n  \"fatherName\": \"\",\n  \"motherName\": \"\",\n  \"emergencyPhone\": \"\",\n  \"reporterId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/staffs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "staffs"]
+            }
+          }
+        },
+        {
+          "name": "Update Staff",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": 2,\n  \"gender\": \"\",\n  \"maritalStatus\": \"\",\n  \"phone\": \"\",\n  \"dob\": \"\",\n  \"joinDate\": \"\",\n  \"qualification\": \"\",\n  \"experience\": \"\",\n  \"currentAddress\": \"\",\n  \"permanentAddress\": \"\",\n  \"fatherName\": \"\",\n  \"motherName\": \"\",\n  \"emergencyPhone\": \"\",\n  \"systemAccess\": true,\n  \"reporterId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/staffs/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "staffs", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Update Staff Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/staffs/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "staffs", ":id", "status"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "List Classes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/classes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "classes"]
+            }
+          }
+        },
+        {
+          "name": "Get Class",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/classes/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "classes", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Class 1\",\n  \"sections\": \"A,B,C\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/classes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "classes"]
+            }
+          }
+        },
+        {
+          "name": "Update Class",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Class 1\",\n  \"sections\": \"A,B,C\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/classes/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "classes", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Delete Class",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/classes/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "classes", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sections",
+      "item": [
+        {
+          "name": "List Sections",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sections",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sections"]
+            }
+          }
+        },
+        {
+          "name": "Get Section",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sections/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sections", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Section",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/sections",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sections"]
+            }
+          }
+        },
+        {
+          "name": "Update Section",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/sections/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sections", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Delete Section",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sections/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sections", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "List Departments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/departments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Get Department",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/departments/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "departments", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mathematics\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/departments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "departments"]
+            }
+          }
+        },
+        {
+          "name": "Update Department",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mathematics\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/departments/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "departments", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Delete Department",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/departments/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "departments", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Class Teachers",
+      "item": [
+        {
+          "name": "List Class Teachers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/class-teachers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "class-teachers"]
+            }
+          }
+        },
+        {
+          "name": "Get Class Teacher",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/class-teachers/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "class-teachers", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Class Teacher",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"class\": \"Class 1\",\n  \"section\": \"A\",\n  \"teacher\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/class-teachers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "class-teachers"]
+            }
+          }
+        },
+        {
+          "name": "Update Class Teacher",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"class\": \"Class 1\",\n  \"section\": \"A\",\n  \"teacher\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/class-teachers/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "class-teachers", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles & Permissions",
+      "item": [
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get Role",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Custom Role\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Role\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Update Role Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":id", "status"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Switch User Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"roleId\": 2\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/switch",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", "switch"]
+            }
+          }
+        },
+        {
+          "name": "Get Role Permissions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:id/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":id", "permissions"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Set Role Permissions",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissions\": [1, 2, 3]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:id/permissions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":id", "permissions"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Role Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:id/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":id", "users"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Access Controls",
+      "item": [
+        {
+          "name": "List Access Controls (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/access-controls",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "access-controls"]
+            }
+          }
+        },
+        {
+          "name": "Get My Access Controls",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/access-controls/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "access-controls", "me"]
+            }
+          }
+        },
+        {
+          "name": "Create Access Control (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"path\": \"\",\n  \"icon\": \"\",\n  \"parentPath\": \"\",\n  \"hierarchyId\": 1,\n  \"type\": \"screen\",\n  \"method\": \"GET\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/access-controls",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "access-controls"]
+            }
+          }
+        },
+        {
+          "name": "Update Access Control (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"path\": \"\",\n  \"icon\": \"\",\n  \"parentPath\": \"\",\n  \"hierarchyId\": 1,\n  \"type\": \"screen\",\n  \"method\": \"GET\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/access-controls/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "access-controls", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Delete Access Control (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/access-controls/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "access-controls", ":id"],
+              "variable": [{ "key": "id", "value": "1" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leave",
+      "item": [
+        {
+          "name": "Policies",
+          "item": [
+            {
+              "name": "List Leave Policies",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies"]
+                }
+              }
+            },
+            {
+              "name": "Get My Leave Policies",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/me",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", "me"]
+                }
+              }
+            },
+            {
+              "name": "Get Eligible Users for Policy",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/eligible-users",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", "eligible-users"]
+                }
+              }
+            },
+            {
+              "name": "Create Leave Policy",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Annual Leave\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies"]
+                }
+              }
+            },
+            {
+              "name": "Update Leave Policy",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Annual Leave\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Update Policy Status",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": true\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/:id/status",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", ":id", "status"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Get Policy Users",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/:id/users",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", ":id", "users"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Add Users to Policy",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"users\": [1, 2, 3]\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/:id/users",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", ":id", "users"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Remove User from Policy",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": 1\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/policies/:id/users",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "policies", ":id", "users"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Requests",
+          "item": [
+            {
+              "name": "List Leave Requests",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/request",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "request"]
+                }
+              }
+            },
+            {
+              "name": "Create Leave Request",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"policy\": 1,\n  \"from\": \"2026-05-15\",\n  \"to\": \"2026-05-16\",\n  \"note\": \"Personal work\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/request",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "request"]
+                }
+              }
+            },
+            {
+              "name": "Update Leave Request",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"policy\": 1,\n  \"from\": \"2026-05-15\",\n  \"to\": \"2026-05-16\",\n  \"note\": \"Updated note\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/request/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "request", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Delete Leave Request",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/request/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "request", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pending Approvals",
+          "item": [
+            {
+              "name": "List Pending Leaves",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/pending",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "pending"]
+                }
+              }
+            },
+            {
+              "name": "Update Pending Leave Status",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": 2\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/leave/pending/:id/status",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "leave", "pending", ":id", "status"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notices",
+      "item": [
+        {
+          "name": "Notices",
+          "item": [
+            {
+              "name": "List Notices",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices"]
+                }
+              }
+            },
+            {
+              "name": "Get Notice",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Create Notice",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"recipientType\": \"EV\",\n  \"recipientRoleId\": null,\n  \"recipientFirstField\": null\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices"]
+                }
+              }
+            },
+            {
+              "name": "Update Notice",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"recipientType\": \"EV\",\n  \"recipientRoleId\": null,\n  \"recipientFirstField\": null\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Update Notice Status",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": 2\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/:id/status",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", ":id", "status"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "List Pending Notices",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/pending",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "pending"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Recipients",
+          "item": [
+            {
+              "name": "List Recipient Types",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/recipients/list",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "recipients", "list"]
+                }
+              }
+            },
+            {
+              "name": "List Recipients",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/recipients",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "recipients"]
+                }
+              }
+            },
+            {
+              "name": "Get Recipient",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/recipients/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "recipients", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Create Recipient",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"roleId\": 1,\n  \"primaryDependentName\": \"\",\n  \"primaryDependentSelect\": \"\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/recipients",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "recipients"]
+                }
+              }
+            },
+            {
+              "name": "Update Recipient",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "x-csrf-token", "value": "{{csrf_token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"roleId\": 1,\n  \"primaryDependentName\": \"\",\n  \"primaryDependentSelect\": \"\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/recipients/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "recipients", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            },
+            {
+              "name": "Delete Recipient",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/notices/recipients/:id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "notices", "recipients", ":id"],
+                  "variable": [{ "key": "id", "value": "1" }]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Utility",
+      "item": [
+        {
+          "name": "Get Teachers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/teachers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "teachers"]
+            }
+          }
+        },
+        {
+          "name": "Get Dashboard Data",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-csrf-token", "value": "{{csrf_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/v1/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "dashboard"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
